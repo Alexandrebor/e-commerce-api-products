@@ -1,6 +1,7 @@
 package br.senac.devweb.api.product.produto;
 
 import br.senac.devweb.api.product.categoria.Categoria;
+import br.senac.devweb.api.product.categoria.CategoriaRepresentation;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public interface ProdutoRepresentation {
 
@@ -32,15 +35,12 @@ public interface ProdutoRepresentation {
         private String complemento;
 
         @NotNull(message = "O campo valor não pode ser nulo")
-        @NotEmpty(message = "O campo valor de medida não pode ser vazio")
         private Double valor;
 
         @NotNull(message = "O campo unidade de medida não pode ser nulo")
-        @NotEmpty(message = "O campo unidade de medida não pode ser vazio")
         private Produto.UnidadeMedida unidadeMedida;
 
         @NotNull(message = "O campo quantidade não pode ser nulo")
-        @NotEmpty(message = "O campo quantidade não pode ser vazio")
         private Double qtde;
 
         @NotNull(message = "O campo fabricante não pode ser nulo")
@@ -52,4 +52,58 @@ public interface ProdutoRepresentation {
         @NotNull(message = "A categoria é obrigatória")
         private Long categoria;
     }
+    @Data
+    @Getter
+    @Setter
+    @Builder
+     class Detalhes {
+        private Long id;
+        private String nome;
+        private String descricao;
+        private String complemento;
+        private Double valor;
+        private Produto.UnidadeMedida unidadeMedida;
+        private Double qtde;
+        private String fabricante;
+        private String fornecedor;
+        private CategoriaRepresentation.Detail categoria;
+
+        public static Detalhes from(Produto produto){
+            return Detalhes.builder()
+                    .id(produto.getId())
+                    .nome(produto.getNome())
+                    .descricao(produto.getDescricao())
+                    .complemento(produto.getComplemento())
+                    .valor(produto.getValor())
+                    .unidadeMedida(produto.getUnidadeMedida())
+                    .qtde(produto.getQtde())
+                    .fabricante(produto.getFabricante())
+                    .fornecedor(produto.getFornecedor())
+                    .categoria(CategoriaRepresentation.Detail.from(produto.getCategoria()))
+                    .build();
+        }
+    }
+
+    @Data
+    @Getter
+    @Setter
+    @Builder
+    class Lista {
+        private Long id;
+        private String nome;
+
+        private static ProdutoRepresentation.Lista from(Produto produto) {
+            return ProdutoRepresentation.Lista.builder()
+                    .id(produto.getId())
+                    .nome(produto.getNome())
+                    .build();
+        }
+
+        public static List<ProdutoRepresentation.Lista> from(List<Produto> produtos) {
+            return produtos.stream()
+                    .map(ProdutoRepresentation.Lista::from)
+                    .collect(Collectors.toList());
+        }
+    }
 }
+

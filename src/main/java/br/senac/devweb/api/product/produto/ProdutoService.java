@@ -17,11 +17,11 @@ import java.util.List;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
-    private final CategoriaService categoriaService;
 
-    public Produto salvar(ProdutoRepresentation.CreateOrUpdate createOrUpdate) {
 
-        Categoria categoria = this.categoriaService.getCategoria(createOrUpdate.getCategoria());
+    public Produto salvar(ProdutoRepresentation.CreateOrUpdate createOrUpdate, Categoria categoria) {
+
+
 
         Produto produto = Produto.builder()
                 .nome(createOrUpdate.getNome())
@@ -38,12 +38,9 @@ public class ProdutoService {
 
         return this.produtoRepository.save(produto);
     }
-
-    public Produto atualizar(Long id, ProdutoRepresentation.CreateOrUpdate createOrUpdate) {
-
+    public Produto atualizar(Long id, ProdutoRepresentation.CreateOrUpdate createOrUpdate, Categoria categoria) {
         Produto produtoAntigo = this.buscarUm(id);
 
-        Categoria categoria = this.categoriaService.getCategoria(createOrUpdate.getCategoria());
 
         Produto produtoAtualizado = produtoAntigo.toBuilder()
                 .nome(createOrUpdate.getNome())
@@ -51,14 +48,11 @@ public class ProdutoService {
                 .complemento(Strings.isEmpty(createOrUpdate.getComplemento()) ? "" : createOrUpdate.getComplemento())
                 .fabricante(createOrUpdate.getFabricante())
                 .fornecedor(Strings.isEmpty(createOrUpdate.getFornecedor()) ? "" : createOrUpdate.getFornecedor())
-                .qtde(createOrUpdate.getQtde())
-                .valor(createOrUpdate.getValor())
+                .qtde(createOrUpdate.getQtde())     .valor(createOrUpdate.getValor())
                 .unidadeMedida(createOrUpdate.getUnidadeMedida())
                 .categoria(categoria)
                 .build();
-
-        return this.produtoRepository.save(produtoAtualizado);
-
+     return this.produtoRepository.save(produtoAtualizado);
     }
 
     public List<Produto> buscarTodos(Predicate filter) {
