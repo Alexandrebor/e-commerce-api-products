@@ -2,6 +2,7 @@ package br.senac.devweb.api.product.produto;
 
 
 import br.senac.devweb.api.product.categoria.Categoria;
+import javassist.bytecode.stackmap.TypeData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import javax.validation.constraints.Size;
 @Builder(toBuilder = true)
 @Entity(name = "PRODUTO")
 public class Produto {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
